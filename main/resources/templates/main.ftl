@@ -26,8 +26,8 @@
             <i>${message.tag}</i>
             <strong>${message.authorName}</strong>
             <div>
-                <#if message.filename??>
-                    <img src="/img/${message.filename}">
+                <#if message.fileName??>
+                    <img src="/img/${message.fileName}">
                 </#if>
             </div>
         </div>
