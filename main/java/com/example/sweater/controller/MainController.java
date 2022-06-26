@@ -6,6 +6,7 @@ import com.example.sweater.repository.MessageRepository;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +37,7 @@ public class MainController {
       String filter,
       Model model
   ) {
-    Iterable<Message> messages = messageRepository.findAll();
+    Iterable<Message> messages;
 
     if (filter != null && !filter.isEmpty()) {
       messages = messageRepository.findByTag(filter);
@@ -57,7 +58,8 @@ public class MainController {
   ) throws IOException {
     Message message = new Message(text, tag, user);
 
-    if (!file.isEmpty() && !file.getOriginalFilename().isEmpty()) {
+    //file.getOriginalFilename() file will be saved only if fileName is present
+    if (!file.isEmpty() && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
       File uploadDir = new File(uploadPath);
 
       if (!uploadDir.exists()) {
