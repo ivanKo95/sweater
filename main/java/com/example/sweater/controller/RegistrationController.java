@@ -1,10 +1,13 @@
 package com.example.sweater.controller;
 
 import com.example.sweater.domain.User;
+import com.example.sweater.domain.dto.CaptchaResponseDto;
 import com.example.sweater.service.UserService;
+import java.util.Collections;
 import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -13,11 +16,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 
 @Controller
 public class RegistrationController {
+  private final static String CAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
+
   @Autowired
   private UserService userService;
+
+  @Autowired
+  private RestTemplate restTemplate;
+
+  @Value("${recaptcha.secret}")
+  private String secret;
 
   @GetMapping("/registration")
   public String registration() {
@@ -27,9 +39,18 @@ public class RegistrationController {
   @PostMapping("/registration")
   public String addUser(
       @RequestParam("password2") String passwordConfirm,
+      @RequestParam("g-recaptcha-response") String captchaResponse,
       @Valid User user,
       BindingResult bindingResult,
-      Model model) {
+      Model model
+  ) {
+    String url = String.format(CAPTCHA_URL, secret, captchaResponse);
+    CaptchaResponseDto response =
+        restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
+
+    if (!response.isSuccess()) {
+      model.addAttribute("captchaError", "Fill captcha");
+    }
 
     boolean isConfirmEmpty = StringUtils.isEmpty(passwordConfirm);
 
@@ -41,7 +62,7 @@ public class RegistrationController {
       model.addAttribute("passwordError", "Wrong confirmation password");
     }
 
-    if (isConfirmEmpty || bindingResult.hasErrors()) {
+    if (isConfirmEmpty || bindingResult.hasErrors() || !response.isSuccess()) {
       Map<String, String> errors = ControllerUtils.getErrorsMap(bindingResult);
 
       model.mergeAttributes(errors);
