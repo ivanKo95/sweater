@@ -60,7 +60,7 @@
                     <i>${message.tag}</i>
                 </div>
                 <div class="card-footer text-muted">
-                    ${message.authorName}
+                    ${message.author.username}
                 </div>
             </div>
         <#else>
