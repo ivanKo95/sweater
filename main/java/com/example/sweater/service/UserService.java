@@ -11,9 +11,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -30,11 +30,11 @@ public class UserService implements UserDetailsService {
   private PasswordEncoder passwordEncoder;
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+  public UserDetails loadUserByUsername(String username) throws BadCredentialsException {
     User user =  userRepository.findByUsername(username);
 
     if (user == null) {
-      throw new UsernameNotFoundException("User not found");
+      throw new BadCredentialsException("User not found");
     }
 
       return user;
@@ -109,7 +109,7 @@ public class UserService implements UserDetailsService {
     String userEmail = user.getEmail();
 
     boolean isEmailChanged =
-        (email != null && !email.equals(userEmail)) || (userEmail != null && userEmail.equals(email));
+        (email != null && !email.equals(userEmail)) || (userEmail != null && !userEmail.equals(email));
 
     if (isEmailChanged) {
       user.setEmail(email);
@@ -120,7 +120,7 @@ public class UserService implements UserDetailsService {
     }
 
     if (!StringUtils.isEmpty(password)) {
-      user.setPassword(password);
+      user.setPassword(passwordEncoder.encode(password));
     }
 
     userRepository.save(user);
