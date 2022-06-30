@@ -13,9 +13,14 @@
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="/">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="/main">Messages</a>
-                </li>
+                <#if user??>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/main">Messages</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user-messages/${currentUserId}">My messages</a>
+                    </li>
+                </#if>
                 <#if isAdmin>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/user">User list</a>
@@ -29,6 +34,7 @@
             </ul>
         </div>
         <div class="navbar-text">${name}</div>
-        <#if name !="unknown"><@l.logout/></#if>
+        <#--        <#if name !="unknown"><@l.logout/></#if>-->
+        <@l.logout/>
     </div>
 </nav>
