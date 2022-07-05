@@ -34,7 +34,7 @@ spring:
       initialize-schema: always
       table-name: SPRING_SESSION
 server:
-  port: 8080
+  port: 8090
 #  profiles:
 #    active: @spring.profiles.active@
 upload:
