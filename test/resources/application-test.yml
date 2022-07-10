@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost/sweater
+    url: jdbc:postgresql://localhost/sweater_test
     username: postgres
     password: psql
   jpa:
@@ -14,12 +14,13 @@ spring:
           lob:
             non_contextual_creation: true
   flyway:
-    enabled: false
+    enabled: true
+    baselineOnMigrate: true
   freemarker:
     expose-request-attributes: true
   mail:
     host: smtp.gmail.com
-    username: email@gmail.com
+    username: ivankolbukh@gmail.com
     password: zekjpiybfwxfrgyg
     port: '465'
     protocol: smtps
@@ -35,11 +36,9 @@ spring:
       table-name: SPRING_SESSION
 server:
   port: 8090
-#  profiles:
-#    active: @spring.profiles.active@
 upload:
   path: /Users/ivan/IdeaProjects/sweater/uploads
 mail:
-  debug: false
+  debug: true
 recaptcha:
   secret: 6LcBl60gAAAAAG82QAi15hOjvUmyJF1yBsR1p_HY

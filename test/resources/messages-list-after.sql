@@ -1,0 +1,1 @@
+DELETE FROM sweater_test.public.message;
