@@ -33,6 +33,9 @@ spring:
     jdbc:
       initialize-schema: always
       table-name: SPRING_SESSION
+  servlet:
+    multipart:
+      max-file-size: 5MB
 server:
   port: 8090
 #  profiles:
